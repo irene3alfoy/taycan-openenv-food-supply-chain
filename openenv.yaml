@@ -1,0 +1,32 @@
+name: taycan-food-supply-chain-env
+version: 1.0.0
+
+description: >
+  OpenEnv-based simulation of a food supply chain where AI agents optimize
+  production, inventory, and waste reduction.
+
+observation_space:
+  type: vector
+  shape: [12]
+  description: inventory, demand, expiry, costs, time
+
+action_space:
+  type: vector
+  shape: [4]
+  description: production and shipping decisions
+
+reward:
+  type: float
+
+episodes:
+  max_steps: 30
+
+tasks:
+  - id: easy
+    description: Stable demand, low variability
+
+  - id: medium
+    description: Moderate demand fluctuations
+
+  - id: hard
+    description: High uncertainty and high spoilage risk
