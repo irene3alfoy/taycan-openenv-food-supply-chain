@@ -8,25 +8,34 @@ description: >
 observation_space:
   type: vector
   shape: [12]
-  description: inventory, demand, expiry, costs, time
+  description: inventory levels, demand forecasts, expiry times, costs, timestep
 
 action_space:
   type: vector
   shape: [4]
-  description: production and shipping decisions
+  description: production quantities and shipment decisions
 
 reward:
   type: float
+  description: combines profit maximization, waste minimization, and demand fulfillment
 
 episodes:
   max_steps: 30
 
+api:
+  reset: /reset
+  step: /step
+  state: /state
+
 tasks:
   - id: easy
     description: Stable demand, low variability
+    difficulty: 0.3
 
   - id: medium
     description: Moderate demand fluctuations
+    difficulty: 0.6
 
   - id: hard
     description: High uncertainty and high spoilage risk
+    difficulty: 0.9
