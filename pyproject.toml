@@ -15,10 +15,14 @@ dependencies = [
     "uvicorn",
     "numpy",
     "pydantic",
-    "requests"
+    "requests",
+    "openenv-core>=0.2.0"
 ]
 
 [tool.uvicorn]
 app = "app:app"
 host = "0.0.0.0"
 port = 7860
+
+[project.scripts]
+server = "app:app"
