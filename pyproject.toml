@@ -1,0 +1,19 @@
+[project]
+name = "taycan-openenv-food-supply-chain"
+version = "0.1.0"
+description = "OpenEnv Food Supply Chain Optimization Environment"
+authors = [{ name = "Team Taycan" }]
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "numpy",
+    "pydantic"
+]
+
+[tool.uvicorn]
+app = "app:app"
+host = "0.0.0.0"
+port = 7860
