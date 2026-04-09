@@ -1,7 +1,11 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
-import uuid
+import sys
+import os
 
+# Add parent directory to path
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
+from app import app
 from env import SupplyChainEnv
 
 app = FastAPI()
