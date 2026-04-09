@@ -2,7 +2,11 @@
 name = "taycan-openenv-food-supply-chain"
 version = "0.1.0"
 description = "OpenEnv Food Supply Chain Optimization Environment"
-authors = [{ name = "Team Taycan" }]
+authors = [
+    { name = "Deekshanya Shri L" },
+    { name = "Shanney Maria Simon" },
+    { name = "Pratheeksha Shalbin" }
+]
 readme = "README.md"
 requires-python = ">=3.10"
 
