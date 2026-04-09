@@ -1,31 +1,109 @@
 # 🚀 Taycan: OpenEnv Food Supply Chain Optimization Environment
 
-## Overview
-Taycan OpenEnv is an AI-driven simulation of a food supply chain where agents optimize production, shipping, inventory, and waste reduction.  
-It is built using **OpenEnv** and deployed as a **FastAPI/Docker Space** on Hugging Face.
+## 🌍 Overview
+Taycan OpenEnv is a real-world AI simulation of a food supply chain where agents optimize **production, shipping, inventory, and waste reduction**.
 
-## Features
-- **Dynamic Environment:** Simulates inventory, demand, spoilage, and cost.
-- **Tasks:** Three difficulty levels
-  - `easy`: Stable demand, low variability
-  - `medium`: Moderate demand fluctuations
-  - `hard`: High uncertainty and spoilage risk
-- **Endpoints:** 
-  - `/reset` → Reset environment to initial state
-  - `/step` → Take an action and get the next state, reward, and done flag
-  - `/state` → Get current environment state
-- **Evaluation:** Computes scores and rewards for AI agents.
+It models real operational challenges such as:
+- Demand uncertainty
+- Inventory mismanagement
+- Food spoilage
+- Cost optimization
 
-## Installation (Local)
-``bash
-git clone https://github.com/Irenemalfoy/taycan-openenv-food-supply-chain.git
-cd taycan-openenv-food-supply-chain
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn main:app --reload
+Built using **OpenEnv standards**, Taycan enables reinforcement learning agents to interact through:
+- `reset()`
+- `step()`
+- `state()`
 
-## 👥 Team Taycan
-- Deekshanya Shri L
-- Shanney Maria Simon
-- Pratheeksha Shalbin 
+Deployed using **FastAPI + Docker on Hugging Face Spaces**, making it scalable and reproducible.
+
+---
+
+## ❗ Problem Statement
+
+Modern food supply chains suffer from:
+- High food wastage due to spoilage
+- Unpredictable demand patterns
+- Inefficient inventory management
+- Lack of AI-ready simulation environments
+
+There is no standardized environment where AI agents can learn to optimize such real-world systems.
+
+---
+
+## 💡 Solution
+
+Taycan provides:
+- A **realistic supply chain simulation**
+- A **reinforcement learning-compatible environment**
+- A **standardized OpenEnv API**
+- A **scalable backend for experimentation**
+
+---
+
+## ⚙️ Features
+
+### 🧠 Dynamic Environment
+- Inventory tracking
+- Demand generation (stochastic)
+- Product expiry & spoilage
+- Cost modeling (production, transport, storage)
+
+### 🎯 Difficulty Levels
+| Level   | Description |
+|--------|------------|
+| Easy   | Stable demand |
+| Medium | Moderate fluctuations |
+| Hard   | High uncertainty + spoilage |
+
+---
+
+## 🔌 API Endpoints
+
+- `POST /reset` → Initialize environment  
+- `POST /step/{session_id}` → Apply action  
+- `GET /state/{session_id}` → Get current state  
+
+---
+
+## 🎯 Tasks & Evaluation
+
+### 🟢 Easy Task
+- Stable demand
+- Low waste
+- Objective: Maintain steady profit
+
+### 🟡 Medium Task
+- Demand fluctuations
+- Objective: Balance supply and demand
+
+### 🔴 Hard Task
+- High uncertainty
+- High spoilage penalties
+- Objective: Optimize under risk
+
+
+🌟 What Makes Taycan Unique
+Real-world supply chain simulation (not a toy problem)
+Multi-objective reward system
+OpenEnv-compliant API
+Deployable and scalable via Hugging Face
+
+👥 Team Taycan
+Deekshanya Shri L
+Shanney Maria Simon
+Pratheeksha Shalbin
+
+---
+
+## 🧪 Reward Function
+
+```python
+reward = (
+    revenue
+    - production_cost
+    - transport_cost
+    - storage_cost
+    - (waste * 15)
+    + (satisfaction * 50)
+)
+
