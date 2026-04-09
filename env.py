@@ -1,5 +1,5 @@
 import numpy as np
-from env import SupplyChainEnv
+
 
 class SupplyChainEnv:
     """
@@ -90,6 +90,9 @@ class SupplyChainEnv:
         self.total_reward += reward
         self.total_waste += waste
 
+        # ✅ Normalize reward (OpenEnv requirement)
+        normalized_reward = max(0.0, min(1.0, reward / 1000))
+
         # 7. Next timestep
         self.time_step += 1
         self.demand = self._generate_demand()
@@ -106,10 +109,8 @@ class SupplyChainEnv:
             "score": float(score)
         }
 
-        # Normalize reward (OpenEnv requirement)
-    normalized_reward = max(0.0, min(1.0, reward / 1000))
         return self.state(), float(normalized_reward), done, info
-    
+
     # 📉 DEMAND GENERATION (3 difficulty levels)
     def _generate_demand(self):
         if self.difficulty == "easy":
@@ -145,6 +146,22 @@ class SupplyChainEnv:
         return max(0.0, min(1.0, raw_score))
 
 
+# 🎯 TASK GRADERS (REQUIRED FOR OPENENV)
+
+def grade_easy(env):
+    return max(0.0, min(1.0, env.total_reward / 2000))
+
+
+def grade_medium(env):
+    score = env.total_reward - env.total_waste * 2
+    return max(0.0, min(1.0, score / 2000))
+
+
+def grade_hard(env):
+    score = env.total_reward - env.total_waste * 5
+    return max(0.0, min(1.0, score / 2000))
+
+
 # 🧪 TEST RUN
 if __name__ == "__main__":
     env = SupplyChainEnv(difficulty="medium")
@@ -155,7 +172,6 @@ if __name__ == "__main__":
     done = False
 
     while not done:
-        # Simple baseline policy
         action = {
             "produce": state["demand"],
             "ship": state["demand"]
