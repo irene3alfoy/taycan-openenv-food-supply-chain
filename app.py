@@ -1,47 +1,68 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
+import uuid
+
+from env import SupplyChainEnv
 
 app = FastAPI()
 
-current_state = {
-    "inventory": [50, 50],
-    "demand": [20, 20]
-}
+# Store multiple sessions
+sessions = {}
 
+# 🎮 Action Model (type-safe)
+class Action(BaseModel):
+    produce: list[int]
+    ship: list[int]
+
+
+# 🏠 Root endpoint (important for HF)
 @app.get("/")
 def home():
     return {"message": "Taycan OpenEnv is LIVE 🚀"}
 
+
+# 🔄 RESET
 @app.post("/reset")
-def reset():
-    global current_state
-    current_state = {
-        "inventory": [50, 50],
-        "demand": [20, 20]
-    }
-    return {"state": current_state}
+def reset(difficulty: str = "easy"):
+    session_id = str(uuid.uuid4())
 
-@app.post("/step")
-def step(action: dict):
-    global current_state
+    env = SupplyChainEnv(difficulty=difficulty)
+    state = env.reset()
 
-    produce = action.get("produce", [0, 0])
-    ship = action.get("ship", [0, 0])
-
-    current_state["inventory"] = [
-        current_state["inventory"][0] + produce[0] - ship[0],
-        current_state["inventory"][1] + produce[1] - ship[1]
-    ]
-
-    reward = sum(ship) - sum(produce) * 0.5
-    score = max(0, min(1, reward / 50))
+    sessions[session_id] = env
 
     return {
-        "state": current_state,
-        "reward": reward,
-        "done": False,
-        "info": {"score": score}
+        "session_id": session_id,
+        "state": state
     }
 
-@app.get("/state")
-def state():
-    return current_state
+
+# 🎮 STEP
+@app.post("/step/{session_id}")
+def step(session_id: str, action: Action):
+    env = sessions.get(session_id)
+
+    if env is None:
+        return {"error": "Invalid session_id"}
+
+    state, reward, done, info = env.step(action.dict())
+
+    return {
+        "state": state,
+        "reward": reward,
+        "done": done,
+        "info": info
+    }
+
+
+# 📊 STATE
+@app.get("/state/{session_id}")
+def state(session_id: str):
+    env = sessions.get(session_id)
+
+    if env is None:
+        return {"error": "Invalid session_id"}
+
+    return {
+        "state": env.state()
+    }
