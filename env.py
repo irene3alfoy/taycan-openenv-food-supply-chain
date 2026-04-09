@@ -106,8 +106,10 @@ class SupplyChainEnv:
             "score": float(score)
         }
 
-        return self.state(), float(reward), done, info
-
+        # Normalize reward (OpenEnv requirement)
+    normalized_reward = max(0.0, min(1.0, reward / 1000))
+        return self.state(), float(normalized_reward), done, info
+    
     # 📉 DEMAND GENERATION (3 difficulty levels)
     def _generate_demand(self):
         if self.difficulty == "easy":
