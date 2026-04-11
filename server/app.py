@@ -13,10 +13,7 @@ def home():
 
 @app.post("/reset")
 def reset(data: dict = {}):
-    global current_state
-    current_state = {
-        "inventory": [50, 50],
-        "demand": [20, 20]
+    return {"state": {"inventory": [50,50]}
     }
     return {"state": current_state}
 
