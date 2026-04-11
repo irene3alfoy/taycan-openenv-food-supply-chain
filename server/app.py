@@ -1,64 +1,47 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
-from env import SupplyChainEnv
 
 app = FastAPI()
 
-# Global environment instance
-env = None
+current_state = {
+    "inventory": [50, 50],
+    "demand": [20, 20]
+}
 
-
-# ✅ Root check
 @app.get("/")
 def home():
     return {"message": "Taycan OpenEnv is LIVE 🚀"}
 
-
-# ✅ Action schema
-class Action(BaseModel):
-    produce: list[int]
-    ship: list[int]
-
-
-# 🔄 RESET ENDPOINT
 @app.post("/reset")
-def reset():
-    global env
-    env = SupplyChainEnv(difficulty="easy")  # default task
-
-    state = env.reset()
-
-    return {
-        "state": state
+def reset(data: dict = {}):
+    global current_state
+    current_state = {
+        "inventory": [50, 50],
+        "demand": [20, 20]
     }
+    return {"state": current_state}
 
-
-# 🎮 STEP ENDPOINT
 @app.post("/step")
-def step(action: Action):
-    global env
+def step(action: dict):
+    global current_state
 
-    if env is None:
-        return {"error": "Environment not initialized. Call /reset first."}
+    produce = action.get("produce", [0, 0])
+    ship = action.get("ship", [0, 0])
 
-    state, reward, done, info = env.step(action.dict())
+    current_state["inventory"] = [
+        current_state["inventory"][0] + produce[0] - ship[0],
+        current_state["inventory"][1] + produce[1] - ship[1]
+    ]
+
+    reward = sum(ship) - sum(produce) * 0.5
+    score = max(0, min(1, reward / 50))
 
     return {
-        "state": state,
+        "state": current_state,
         "reward": reward,
-        "done": done,
-        "info": info
+        "done": False,
+        "info": {"score": score}
     }
 
-
-# 📊 STATE ENDPOINT
 @app.get("/state")
 def state():
-    global env
-
-    if env is None:
-        return {"error": "Environment not initialized. Call /reset first."}
-
-    return {
-        "state": env.state()
-    }
+    return current_state
